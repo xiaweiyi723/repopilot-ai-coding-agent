@@ -17,6 +17,16 @@ easy to verify.
 - Produce a JSON inventory that later retrieval and agent tools can consume.
 - Unit tests cover filtering, metadata, and stable ordering.
 
+## Day 2 status
+
+- Parse Python source safely with the standard-library AST without executing it.
+- Extract classes, functions, async functions, methods, qualified names, line
+  ranges, signatures, and imports.
+- Isolate syntax errors so one malformed file does not stop the repository map.
+- Expose human-readable and JSON symbol maps through the CLI.
+- Add tests for symbol kinds, signatures, relative imports, malformed source,
+  stable ordering, and ignored directories.
+
 ## Architecture target
 
 ```text
@@ -45,6 +55,8 @@ explicit user action.
 python -m pip install -e .
 repopilot scan .
 repopilot scan . --json
+repopilot symbols .
+repopilot symbols . --json
 ```
 
 Run the tests:
