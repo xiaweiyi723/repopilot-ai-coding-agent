@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 from .scanner import scan_repository
+from .symbols import build_python_symbol_map
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -24,11 +25,35 @@ def _build_parser() -> argparse.ArgumentParser:
         default=1_000_000,
         help="Skip source files larger than this value (default: 1000000).",
     )
+    symbols = subcommands.add_parser("symbols", help="Build a Python AST symbol map.")
+    symbols.add_argument("path", nargs="?", default=".", type=Path)
+    symbols.add_argument("--json", action="store_true", help="Print machine-readable JSON.")
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     args = _build_parser().parse_args(argv)
+    if args.command == "symbols":
+        modules = build_python_symbol_map(args.path)
+        if args.json:
+            print(
+                json.dumps(
+                    {"modules": [module.to_dict() for module in modules]},
+                    indent=2,
+                    ensure_ascii=False,
+                )
+            )
+            return 0
+
+        for module in modules:
+            print(f"{module.path}:")
+            if module.parse_error:
+                print(f"  ! {module.parse_error}")
+                continue
+            for symbol in module.symbols:
+                print(f"  {symbol.kind:<14} {symbol.qualified_name}  L{symbol.line_start}")
+        return 0
+
     if args.command != "scan":
         return 2
 
