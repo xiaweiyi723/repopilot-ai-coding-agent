@@ -6,6 +6,7 @@ import argparse
 import json
 from pathlib import Path
 
+from .chunks import chunk_repository
 from .scanner import scan_repository
 from .symbols import build_python_symbol_map
 
@@ -28,11 +29,30 @@ def _build_parser() -> argparse.ArgumentParser:
     symbols = subcommands.add_parser("symbols", help="Build a Python AST symbol map.")
     symbols.add_argument("path", nargs="?", default=".", type=Path)
     symbols.add_argument("--json", action="store_true", help="Print machine-readable JSON.")
+    chunks = subcommands.add_parser("chunks", help="Build retrieval-ready code chunks.")
+    chunks.add_argument("path", nargs="?", default=".", type=Path)
+    chunks.add_argument("--max-lines", type=int, default=80)
+    chunks.add_argument("--overlap-lines", type=int, default=10)
+    chunks.add_argument("--json", action="store_true", help="Print machine-readable JSON.")
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     args = _build_parser().parse_args(argv)
+    if args.command == "chunks":
+        chunks = chunk_repository(
+            args.path,
+            max_lines=args.max_lines,
+            overlap_lines=args.overlap_lines,
+        )
+        if args.json:
+            print(json.dumps({"chunks": [chunk.to_dict() for chunk in chunks]}, indent=2))
+            return 0
+        for chunk in chunks:
+            label = f" [{chunk.symbol}]" if chunk.symbol else ""
+            print(f"{chunk.path}:L{chunk.line_start}-L{chunk.line_end}{label}")
+        return 0
+
     if args.command == "symbols":
         modules = build_python_symbol_map(args.path)
         if args.json:
