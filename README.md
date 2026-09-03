@@ -27,6 +27,16 @@ easy to verify.
 - Add tests for symbol kinds, signatures, relative imports, malformed source,
   stable ordering, and ignored directories.
 
+## Day 3 status
+
+- Split Python source at top-level class and function boundaries before applying
+  size limits, so retrieval chunks preserve meaningful code units.
+- Attach file path, language, symbol name, symbol kind, and exact line range to
+  every chunk for later citation and ranking.
+- Apply configurable overlapping line windows only when a code segment is too
+  large, with a deterministic fallback for non-Python or malformed files.
+- Add boundary, overlap, validation, repository-ordering, and JSON metadata tests.
+
 ## Architecture target
 
 ```text
@@ -57,6 +67,8 @@ repopilot scan .
 repopilot scan . --json
 repopilot symbols .
 repopilot symbols . --json
+repopilot chunks .
+repopilot chunks . --max-lines 80 --overlap-lines 10 --json
 ```
 
 Run the tests:
