@@ -37,6 +37,22 @@ easy to verify.
   large, with a deterministic fallback for non-Python or malformed files.
 - Add boundary, overlap, validation, repository-ordering, and JSON metadata tests.
 
+## Day 4: local code retrieval
+
+An AI coding agent needs relevant source context before planning a change.
+`repopilot search "parse syntax" src/repopilot --top-k 3` now ranks code
+chunks using an in-memory BM25 index built entirely with the Python standard
+library. Add `--json` to return source content, scores, symbols and line ranges.
+Paths, symbol names and source are indexed; snake_case and camelCase are split.
+Empty or unmatched queries return no results. No API key or network is needed.
+
+Five synthetic cases in `tests/test_retrieval.py` cover file reading, syntax
+parsing, chunk splitting, result ranking and JSON serialization. These are
+small regression examples, not a real-world retrieval accuracy benchmark.
+BM25 matches words rather than meaning: synonyms and cross-language questions
+may miss relevant code. Scores are ranking values, not confidence percentages.
+The index is rebuilt per command; persistence and embeddings are future work.
+
 ## Architecture target
 
 ```text
