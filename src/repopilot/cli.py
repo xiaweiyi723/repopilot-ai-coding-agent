@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 from .chunks import chunk_repository
+from .qa import answer_repository
 from .retrieval import BM25Index
 from .scanner import scan_repository
 from .symbols import build_python_symbol_map
@@ -40,11 +41,28 @@ def _build_parser() -> argparse.ArgumentParser:
     search.add_argument("path", nargs="?", default=".", type=Path)
     search.add_argument("--top-k", type=int, default=5)
     search.add_argument("--json", action="store_true")
+    ask = subcommands.add_parser("ask", help="Answer from repository evidence.")
+    ask.add_argument("question")
+    ask.add_argument("path", nargs="?", default=".", type=Path)
+    ask.add_argument("--top-k", type=int, default=3)
+    ask.add_argument("--json", action="store_true")
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     args = _build_parser().parse_args(argv)
+    if args.command == "ask":
+        if args.top_k < 1:
+            raise SystemExit("--top-k must be positive")
+        result = answer_repository(args.question, args.path, top_k=args.top_k)
+        if args.json:
+            print(json.dumps(result.to_dict(), indent=2, ensure_ascii=False))
+        else:
+            print(result.answer)
+            for citation in result.citations:
+                print(f"- {citation.location} [{citation.symbol or 'module'}]")
+        return 0 if result.supported else 1
+
     if args.command == "search":
         if args.top_k < 1:
             raise SystemExit("--top-k must be positive")
@@ -113,4 +131,3 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
