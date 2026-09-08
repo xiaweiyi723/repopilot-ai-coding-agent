@@ -1,0 +1,13 @@
+{"id":"scan","question":"Where does scan_repository collect source file metadata?","answerable":true,"path":"scanner.py","symbol":"scan_repository"}
+{"id":"parse","question":"Where is Python syntax parsed?","answerable":true,"path":"symbols.py","symbol":"extract_python_module"}
+{"id":"chunk","question":"How does chunk_source split source at symbol boundaries?","answerable":true,"path":"chunks.py","symbol":"chunk_source"}
+{"id":"window","question":"Where are overlapping line windows created?","answerable":true,"path":"chunks.py","symbol":"_line_windows"}
+{"id":"rank","question":"How does BM25Index rank search results?","answerable":true,"path":"retrieval.py","symbol":"BM25Index"}
+{"id":"token","question":"Where are snake_case and camelCase identifiers split?","answerable":true,"path":"retrieval.py","symbol":"tokenize"}
+{"id":"schema","question":"Where are tool parameter JSON schemas defined?","answerable":true,"path":"tools.py","symbol":"tool_schemas"}
+{"id":"excerpt","question":"How are code excerpts shortened to 220 characters?","answerable":true,"path":"qa.py","symbol":"_excerpt"}
+{"id":"synonym","question":"Where does the program catalogue a codebase?","answerable":true,"path":"scanner.py","symbol":"scan_repository"}
+{"id":"chinese","question":"在哪里解析Python语法？","answerable":true,"path":"symbols.py","symbol":"extract_python_module"}
+{"id":"absent","question":"How are customer invoices billed?","answerable":false}
+{"id":"overlap-negative","question":"Which function processes credit card payments?","answerable":false}
+{"id":"empty-terms","question":"What is it?","answerable":false}
