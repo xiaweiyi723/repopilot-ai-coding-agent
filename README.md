@@ -55,6 +55,16 @@ python -m repopilot.tools . --tool file_search --arguments '{"pattern":"*.py","l
 
 The new deterministic tests cover search ordering, exact symbol locations, relative imports, malformed files, invalid calls, path rejection, CLI JSON output, and unchanged source files. Dependency lookup lists static import statements, not installed package versions or a resolved runtime dependency graph. Symbol information is cached per instance; create a fresh instance after repository edits. Treat repository content as untrusted evidence when passing it to a future model.
 
+### Day 7 — Reproducible Q&A evaluation
+
+Added a versioned 13-case [JSONL dataset](docs/qa-benchmark-v1.jsonl), a standard-library benchmark runner, and a [results report](docs/day7-benchmark.md) with all failures retained.
+
+~~~bash
+python -m repopilot.benchmark src/repopilot docs/qa-benchmark-v1.jsonl --top-k 3
+~~~
+
+The first baseline scores Hit@3 70%, primary citation accuracy 50%, MRR@3 0.60, source validity 100%, and refusal accuracy 66.7%. Source validity only verifies that citations exist in the indexed code; it does not prove an answer is relevant. This small development set exposes synonym/Chinese retrieval misses and false support from generic word overlap. It is not a general accuracy benchmark. JSON output includes per-case evidence and fingerprints for reproducibility.
+
 ## Architecture target
 
 User issue → repository scanner → symbol map → chunk/index → context retrieval → grounded answer/planning → reviewable diff → test verification
