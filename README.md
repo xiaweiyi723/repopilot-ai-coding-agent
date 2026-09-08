@@ -38,6 +38,23 @@ Questions without meaningful matching code return an explicit refusal and exit s
 
 This first version is extractive: it identifies and quotes the strongest evidence but does not yet synthesize explanations across several files.
 
+### Day 6 — Read-only repository tools
+
+Agents can now call three explicit tools through `RepositoryTools(root).call(name, arguments)`:
+
+- `file_search`: case-sensitive repository path glob, for example `{"pattern":"*.py","limit":10}`. A `*` can match path separators.
+- `symbol_lookup`: exact Python name or qualified name, for example `{"name":"RepositoryTools.call"}`; returns signatures and source lines.
+- `dependency_lookup`: static imports in one scanned Python file, for example `{"path":"src/repopilot/cli.py"}`; retains relative imports and source lines.
+
+`tool_schemas()` supplies provider-neutral JSON function definitions. The host binds the repository root; callers cannot override it. Calls reject unknown tools, extra arguments, invalid limits, and paths outside the scanned inventory. Results include total counts, truncation flags, and bounded parse diagnostics. No code is executed or files modified.
+
+~~~bash
+python -m repopilot.tools --schemas
+python -m repopilot.tools . --tool file_search --arguments '{"pattern":"*.py","limit":5}'
+~~~
+
+The new deterministic tests cover search ordering, exact symbol locations, relative imports, malformed files, invalid calls, path rejection, CLI JSON output, and unchanged source files. Dependency lookup lists static import statements, not installed package versions or a resolved runtime dependency graph. Symbol information is cached per instance; create a fresh instance after repository edits. Treat repository content as untrusted evidence when passing it to a future model.
+
 ## Architecture target
 
 User issue → repository scanner → symbol map → chunk/index → context retrieval → grounded answer/planning → reviewable diff → test verification
