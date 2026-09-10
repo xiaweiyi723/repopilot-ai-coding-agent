@@ -65,6 +65,14 @@ python -m repopilot.benchmark src/repopilot docs/qa-benchmark-v1.jsonl --top-k 3
 
 The first baseline scores Hit@3 70%, primary citation accuracy 50%, MRR@3 0.60, source validity 100%, and refusal accuracy 66.7%. Source validity only verifies that citations exist in the indexed code; it does not prove an answer is relevant. This small development set exposes synonym/Chinese retrieval misses and false support from generic word overlap. It is not a general accuracy benchmark. JSON output includes per-case evidence and fingerprints for reproducibility.
 
+### Day 8 — Evidence-backed change planning
+
+`python -m repopilot.planner . --issue "answer_chunks should refuse unsupported questions" --top-k 3`
+
+The JSON plan contains candidate files, line citations, review steps, risks, existing test-file candidates, test suggestions, and open questions. No API key is required. This is a deterministic retrieval-and-template planning baseline, not an autonomous LLM agent: it does not infer exact edits, apply patches, execute tests, or fetch GitHub issues. Paste issue text explicitly. Lexical matches always require human review; no matches produce `needs_context` and no invented implementation steps. Exit codes: 0 for a reviewable candidate plan, 1 for missing context, 2 for invalid input.
+
+See [three example issue plans and validation](docs/day8-planning.md). Existing test files are listed by filename convention, not inferred coverage; use the repository root to include tests. Excerpts can contain untrusted instructions and are not safe prompts for downstream models without additional defenses.
+
 ## Architecture target
 
 User issue → repository scanner → symbol map → chunk/index → context retrieval → grounded answer/planning → reviewable diff → test verification
