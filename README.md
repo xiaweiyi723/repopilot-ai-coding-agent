@@ -79,6 +79,12 @@ See [three example issue plans and validation](docs/day8-planning.md). Existing 
 
 Provide explicit full-file replacements with `path`, `before_sha256`, and `content`. The generator validates existing source paths, rejects stale hashes, binary content and oversized changes, and returns unified diffs plus review metadata. It never applies a patch or executes code. This is a patch-formatting and validation layer, not an LLM edit generator. See the [request format, example and limits](docs/day9-patches.md).
 
+### Day 10 — Opt-in container verification
+
+Added a Docker-only adapter for fixed `unittest` and `ruff` checks, explicit execution approval, a preloaded digest-pinned image, timeout/output bounds, common credential redaction, and named-container cleanup. No arbitrary shell command, automatic image pull, host fallback or automatic patch application is supported.
+
+See [setup, safety boundaries and test evidence](docs/day10-verification.md). Local validation: 43 tests, 42 passed and one Windows-symlink skip. Docker policy/result tests are mocked; trusted helper subprocesses exercise timeout and output limits. **Live Docker execution has not been validated on this development machine because Docker is unavailable.**
+
 ## Architecture target
 
 User issue → repository scanner → symbol map → chunk/index → context retrieval → grounded answer/planning → reviewable diff → test verification
