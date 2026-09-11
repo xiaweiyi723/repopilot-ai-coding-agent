@@ -73,6 +73,12 @@ The JSON plan contains candidate files, line citations, review steps, risks, exi
 
 See [three example issue plans and validation](docs/day8-planning.md). Existing test files are listed by filename convention, not inferred coverage; use the repository root to include tests. Excerpts can contain untrusted instructions and are not safe prompts for downstream models without additional defenses.
 
+### Day 9 — Guarded diff-only proposals
+
+`python -m repopilot.patches . --edits edits.json --json`
+
+Provide explicit full-file replacements with `path`, `before_sha256`, and `content`. The generator validates existing source paths, rejects stale hashes, binary content and oversized changes, and returns unified diffs plus review metadata. It never applies a patch or executes code. This is a patch-formatting and validation layer, not an LLM edit generator. See the [request format, example and limits](docs/day9-patches.md).
+
 ## Architecture target
 
 User issue → repository scanner → symbol map → chunk/index → context retrieval → grounded answer/planning → reviewable diff → test verification
