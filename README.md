@@ -2,6 +2,17 @@
 
 RepoPilot is a portfolio project that explores how an AI coding agent can understand an unfamiliar repository, retrieve the right context, answer questions with evidence, propose reviewable patches, and verify results with tests.
 
+## Project status
+
+Development updates were temporarily paused due to academic commitments. Implementation has reached Day 10; Days 11–14 remain planned milestones. The dates in the original build plan are initial targets, and the day numbers now indicate milestone order.
+
+Remaining work:
+
+- **Day 11:** FastAPI service and a web demo for scanning, repository Q&A, change planning, and diff inspection.
+- **Day 12:** Input defenses, secret redaction, structured logs, and error handling.
+- **Day 13:** GitHub Actions, Docker setup, architecture notes, and a usage tutorial.
+- **Day 14:** Final evaluation, demo video, release notes, and the v0.1.0 release.
+
 ## Build progress
 
 ### Day 1 — Repository scanner
